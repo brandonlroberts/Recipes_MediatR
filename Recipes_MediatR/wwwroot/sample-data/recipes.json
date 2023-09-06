@@ -1,0 +1,194 @@
+﻿{
+  "RecipesTableViewModel": [
+    {
+      "Id": 1,
+      "Title": "Spaghetti Bolognese",
+      "Createddate": "2023-09-06T10:30:00",
+      "Createby": "Chef John",
+      "IngredientMeasurements": [
+        {
+          "Ingredient": {
+            "Id": 1,
+            "Name": "Ground Beef"
+          },
+          "Measurement": {
+            "Id": 1,
+            "Grams": 250
+          }
+        },
+        {
+          "Ingredient": {
+            "Id": 2,
+            "Name": "Onion"
+          },
+          "Measurement": {
+            "Id": 2,
+            "Grams": 100
+          }
+        },
+        {
+          "Ingredient": {
+            "Id": 3,
+            "Name": "Tomato Sauce"
+          },
+          "Measurement": {
+            "Id": 3,
+            "Grams": 300
+          }
+        }
+      ]
+    },
+    {
+      "Id": 2,
+      "Title": "Chicken Stir-Fry",
+      "Createddate": "2023-09-05T15:45:00",
+      "Createby": "Chef Lisa",
+      "IngredientMeasurements": [
+        {
+          "Ingredient": {
+            "Id": 4,
+            "Name": "Chicken Breast"
+          },
+          "Measurement": {
+            "Id": 4,
+            "Grams": 200
+          }
+        },
+        {
+          "Ingredient": {
+            "Id": 5,
+            "Name": "Broccoli"
+          },
+          "Measurement": {
+            "Id": 5,
+            "Grams": 150
+          }
+        },
+        {
+          "Ingredient": {
+            "Id": 6,
+            "Name": "Soy Sauce"
+          },
+          "Measurement": {
+            "Id": 6,
+            "Grams": 50
+          }
+        }
+      ]
+    }
+  ]//,
+  //"IngredientMeasurement": [
+  //  {
+  //    "Ingredient": {
+  //      "Id": 1,
+  //      "Name": "Ground Beef"
+  //    },
+  //    "Measurement": {
+  //      "Id": 1,
+  //      "Grams": 250
+  //    }
+  //  },
+  //  {
+  //    "Ingredient": {
+  //      "Id": 2,
+  //      "Name": "Onion"
+  //    },
+  //    "Measurement": {
+  //      "Id": 2,
+  //      "Grams": 100
+  //    }
+  //  },
+  //  {
+  //    "Ingredient": {
+  //      "Id": 3,
+  //      "Name": "Tomato Sauce"
+  //    },
+  //    "Measurement": {
+  //      "Id": 3,
+  //      "Grams": 300
+  //    }
+  //  },
+  //  {
+  //    "Ingredient": {
+  //      "Id": 4,
+  //      "Name": "Chicken Breast"
+  //    },
+  //    "Measurement": {
+  //      "Id": 4,
+  //      "Grams": 200
+  //    }
+  //  },
+  //  {
+  //    "Ingredient": {
+  //      "Id": 5,
+  //      "Name": "Broccoli"
+  //    },
+  //    "Measurement": {
+  //      "Id": 5,
+  //      "Grams": 150
+  //    }
+  //  },
+  //  {
+  //    "Ingredient": {
+  //      "Id": 6,
+  //      "Name": "Soy Sauce"
+  //    },
+  //    "Measurement": {
+  //      "Id": 6,
+  //      "Grams": 50
+  //    }
+  //  }
+  //],
+  //"Ingredient": [
+  //  {
+  //    "Id": 1,
+  //    "Name": "Ground Beef"
+  //  },
+  //  {
+  //    "Id": 2,
+  //    "Name": "Onion"
+  //  },
+  //  {
+  //    "Id": 3,
+  //    "Name": "Tomato Sauce"
+  //  },
+  //  {
+  //    "Id": 4,
+  //    "Name": "Chicken Breast"
+  //  },
+  //  {
+  //    "Id": 5,
+  //    "Name": "Broccoli"
+  //  },
+  //  {
+  //    "Id": 6,
+  //    "Name": "Soy Sauce"
+  //  }
+  //],
+  //"Measurement": [
+  //  {
+  //    "Id": 1,
+  //    "Grams": 250
+  //  },
+  //  {
+  //    "Id": 2,
+  //    "Grams": 100
+  //  },
+  //  {
+  //    "Id": 3,
+  //    "Grams": 300
+  //  },
+  //  {
+  //    "Id": 4,
+  //    "Grams": 200
+  //  },
+  //  {
+  //    "Id": 5,
+  //    "Grams": 150
+  //  },
+  //  {
+  //    "Id": 6,
+  //    "Grams": 50
+  //  }
+  //]
+}
