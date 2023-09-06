@@ -25,7 +25,7 @@ namespace Recipes_MediatR.Components.Recipes.Tables.Recipes
 
         public async Task<List<RecipesTableViewModel>> Handle(GetRecipes request, CancellationToken cancellationToken)
         {
-            var response = await _httpClient.GetFromJsonAsync<List<RecipesTableViewModel>>("sample-data/recipes.json");
+            var response = await _httpClient.GetFromJsonAsync<List<RecipesTableViewModel>>("https://localhost:7164/recipes/");
             return response?.Take(request.PageSize).ToList()!;
         }
     }

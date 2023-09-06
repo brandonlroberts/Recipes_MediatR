@@ -6,24 +6,21 @@
         public string? Title { get; set; }
         public DateTime? Createddate { get; set; }
         public string? Createby { get; set; }
-        public List<IngredientMeasurement>? IngredientMeasurements { get; set; }
-    }
-        
-    public class IngredientMeasurement
-    {
-        public required Ingredient Ingredient { get; set; }
-        public required Measurement Measurement { get; set; }
+        public List<Ingredient>? Ingredients { get; set; }
+        public List<Instruction>? Instructions { get; set; }
     }
 
     public class Ingredient
     {
         public int Id { get; set; }
         public string? Name { get; set; }
+        public string? Measurements { get; set; }
     }
 
-    public class Measurement
+    public class Instruction
     {
         public int Id { get; set; }
-        public int Grams { get; set; }
+        public int Sequence { get; set; }
+        public string? Summary { get; set; }
     }
 }
