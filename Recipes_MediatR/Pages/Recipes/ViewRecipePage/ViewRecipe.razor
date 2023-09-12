@@ -1,0 +1,16 @@
+﻿@page "/viewrecipe/{Id:int}"
+@using static Recipes_MediatR.Pages.Recipes.EditRecipePage.GetRecipeCoreDataHandler;
+@inject IMediator MediatR;
+
+<h1>View</h1>
+<h1>Recipe Id: @Id</h1>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private EditRecipeViewModel Recipe = new EditRecipeViewModel();
+
+    protected async override Task OnInitializedAsync()
+    {
+        Recipe = await MediatR.Send(new GetRecipeCoreData(Id));
+    }
+}
