@@ -2,12 +2,19 @@
 
 namespace Recipes_MediatR.Components.Recipes.Tables.Recipes
 {
+    public record GetRecipesForTable
+    {
+        public record Response
+        {
+            public IEnumerable<Recipe> Recipes { get; set; }
+        }
+    }
     public class Recipe
     {
         public int Id { get; set; }
         public string? Title { get; set; }
-        public DateTime? Createddate { get; set; }
-        public string? Createby { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string? Createdby { get; set; }
         public List<Ingredient>? Ingredients { get; set; }
         public List<Instruction>? Instructions { get; set; }
     }

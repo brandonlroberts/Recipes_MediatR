@@ -67,10 +67,10 @@ namespace Recipes_MediatR_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Createby")
+                    b.Property<string>("Createdby")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("Createddate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")

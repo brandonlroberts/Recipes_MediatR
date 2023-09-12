@@ -11,8 +11,8 @@ using Recipes_MediatR.Components.Recipes.Tables.Recipes;
 namespace Recipes_MediatR_API.Migrations
 {
     [DbContext(typeof(RecipeDb))]
-    [Migration("20230906165017_AddedInstructionsTable")]
-    partial class AddedInstructionsTable
+    [Migration("20230912200213_ChangedVariableName")]
+    partial class ChangedVariableName
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,7 +70,7 @@ namespace Recipes_MediatR_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CreatedBy")
+                    b.Property<string>("Createdby")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("CreatedDate")

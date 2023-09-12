@@ -1,10 +1,15 @@
 ﻿using MediatR;
+using Recipes_MediatR.Config;
 using System.Net.Http.Json;
-using static Recipes_MediatR.Pages.Recipes.EditRecipePage.EditRecipeCoreDataHandler;
 
 namespace Recipes_MediatR.Pages.Recipes.EditRecipePage
 {
-    public class EditRecipeCoreDataHandler : IRequestHandler<EditRecipeCoreData, EditRecipeViewModel>
+    public record EditRecipeCoreData
+    {
+        public record Request(int Id, string Title, DateTime? CreatedDate, string CreatedBy) : BlazorMediatRRequest, IRequest;
+    }
+
+    public class EditRecipeCoreDataHandler : IRequestHandler<EditRecipeCoreData.Request>
     {
         private readonly HttpClient _httpClient;
 
@@ -13,27 +18,21 @@ namespace Recipes_MediatR.Pages.Recipes.EditRecipePage
             _httpClient = httpClient;
         }
 
-        public class EditRecipeCoreData : IRequest<EditRecipeViewModel>
+        public async Task Handle(EditRecipeCoreData.Request request, CancellationToken cancellationToken)
         {
-            public EditRecipeViewModel Recipe { get; set; }
-
-            public EditRecipeCoreData(EditRecipeViewModel recipe)
+            try
             {
-                Recipe = recipe;
+                HttpResponseMessage response = await _httpClient.PutAsJsonAsync($"https://localhost:7164/recipe/{request.Id}", request);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"HTTP request failed with status code: {response.StatusCode}. Response Content: {responseContent}");
+                }
             }
-        }
-
-        public async Task<EditRecipeViewModel> Handle(EditRecipeCoreData request, CancellationToken cancellationToken)
-        {
-            var updatedDate = new EditRecipeViewModel
+            catch (HttpRequestException ex)
             {
-                Id = request.Recipe.Id,
-                Createby = request.Recipe.Createby,
-                Createddate = request.Recipe.Createddate,
-                Title = request.Recipe.Title
-            };
-            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7164/recipe/{request.Recipe.Id}", updatedDate);
-            return request.Recipe;
+                throw ex;
+            }
         }
     }
 }

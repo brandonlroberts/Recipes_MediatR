@@ -1,10 +1,20 @@
 ﻿using MediatR;
+using Recipes_MediatR.Config;
 using System.Net.Http.Json;
-using static Recipes_MediatR.Components.Recipes.Tables.Recipes.RecipesTableHandler;
 
 namespace Recipes_MediatR.Components.Recipes.Tables.Recipes
 {
-    public class RecipesTableHandler : IRequestHandler<GetRecipes, List<RecipesTableViewModel>>
+    public record GetRecipeCoreTableData
+    {
+        public record Request(int PageSize) : BlazorMediatRRequest, IRequest<Response>;
+
+        public record Response : AuditableResponse
+        {
+            public List<RecipesTableViewModel> Recipes { get; set; }
+        }
+    }
+
+    public class RecipesTableHandler : IRequestHandler<GetRecipeCoreTableData.Request, GetRecipeCoreTableData.Response>
     {
         private readonly HttpClient _httpClient;
 
@@ -13,20 +23,11 @@ namespace Recipes_MediatR.Components.Recipes.Tables.Recipes
             _httpClient = httpClient;
         }
 
-        public class GetRecipes : IRequest<List<RecipesTableViewModel>>
+        public async Task<GetRecipeCoreTableData.Response> Handle(GetRecipeCoreTableData.Request request, CancellationToken cancellationToken)
         {
-            public int PageSize { get; set; }
-
-            public GetRecipes(int pageSize = 10)
-            {
-                PageSize = pageSize;
-            }
-        }
-
-        public async Task<List<RecipesTableViewModel>> Handle(GetRecipes request, CancellationToken cancellationToken)
-        {
-            var response = await _httpClient.GetFromJsonAsync<List<RecipesTableViewModel>>("https://localhost:7164/recipes/");
-            return response?.Take(request.PageSize).ToList()!;
+            var response = await _httpClient.GetFromJsonAsync<GetRecipeCoreTableData.Response>("https://localhost:7164/recipes/");
+            response.Recipes = response.Recipes.Take(request.PageSize).ToList();
+            return response;
         }
     }
 }

@@ -7,10 +7,10 @@
 
 @code {
     [Parameter] public int Id { get; set; }
-    private EditRecipeViewModel Recipe = new EditRecipeViewModel();
+    private GetRecipeCoreData.Response Recipe = new();
 
     protected async override Task OnInitializedAsync()
     {
-        Recipe = await MediatR.Send(new GetRecipeCoreData(Id));
+        Recipe = await MediatR.Send(new GetRecipeCoreData.Request(Id));
     }
 }

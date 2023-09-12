@@ -29,23 +29,23 @@
     </ColGroup>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortBy="new Func<RecipesTableViewModel, object>(x=>x.Title)">Title</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<RecipesTableViewModel, object>(x=>x.Createddate)">Created Date</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<RecipesTableViewModel, object>(x=>x.Createby)">Created By</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<RecipesTableViewModel, object>(x=>x.CreatedDate)">Created Date</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<RecipesTableViewModel, object>(x=>x.CreatedBy)">Created By</MudTableSortLabel></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Title">@context.Title</MudTd>
-        <MudTd DataLabel="Created Date">@context.Createddate</MudTd>
-        <MudTd DataLabel="Created By">@context.Createby</MudTd>
+        <MudTd DataLabel="Created Date">@context.CreatedDate</MudTd>
+        <MudTd DataLabel="Created By">@context.CreatedBy</MudTd>
     </RowTemplate>
     <RowEditingTemplate>
         <MudTd DataLabel="Title">
             <MudTextField @bind-Value="@context.Title" Required />
         </MudTd>
         <MudTd DataLabel="Temperature C">
-            <MudDatePicker @bind-Date="@context.Createddate" DateFormat="dd.MM.yyyy" Required />
+            <MudDatePicker @bind-Date="@context.CreatedDate" DateFormat="dd.MM.yyyy" Required />
         </MudTd>
         <MudTd DataLabel="Create By">
-            <MudTextField @bind-Value="@context.Createby" Required />
+            <MudTextField @bind-Value="@context.CreatedBy" Required />
         </MudTd>
     </RowEditingTemplate>
     <PagerContent>
@@ -88,8 +88,8 @@
         recipeBeforeEdit = new()
             {
                 Title = ((RecipesTableViewModel)recipe).Title,
-                Createddate = ((RecipesTableViewModel)recipe).Createddate,
-                Createby = ((RecipesTableViewModel)recipe).Createby
+                CreatedDate = ((RecipesTableViewModel)recipe).CreatedDate,
+                CreatedBy = ((RecipesTableViewModel)recipe).CreatedBy
             };
         AddEditionEvent($"RowEditPreview event: made a backup of Recipe {((RecipesTableViewModel)recipe).Title}");
     }
@@ -102,8 +102,8 @@
     private void ResetItemToOriginalValues(object recipe)
     {
         ((RecipesTableViewModel)recipe).Title = recipeBeforeEdit?.Title;
-        ((RecipesTableViewModel)recipe).Createddate = recipeBeforeEdit!.Createddate;
-        ((RecipesTableViewModel)recipe).Createby = recipeBeforeEdit.Createby;
+        ((RecipesTableViewModel)recipe).CreatedDate = recipeBeforeEdit!.CreatedDate;
+        ((RecipesTableViewModel)recipe).CreatedBy = recipeBeforeEdit.CreatedBy;
         AddEditionEvent($"RowEditCancel event: Editing of Recipe {((RecipesTableViewModel)recipe).Title} canceled");
     }
 
@@ -113,9 +113,9 @@
             return true;
         if (!string.IsNullOrEmpty(recipe.Title) && recipe.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (recipe.Createddate != null && recipe.Createddate.ToString()!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (recipe.CreatedDate != null && recipe.CreatedDate.ToString()!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (!string.IsNullOrEmpty(recipe.Createby) && recipe.Createby.Contains(searchString))
+        if (!string.IsNullOrEmpty(recipe.CreatedBy) && recipe.CreatedBy.Contains(searchString))
             return true;
         return false;
     }

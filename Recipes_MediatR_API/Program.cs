@@ -32,8 +32,13 @@ app.UseAuthorization();
 app.MapGet("/recipes", async (RecipeDb db) =>
 {
     var recipes = await db.Recipes.Include(x => x.Ingredients).Include(x => x.Instructions).ToListAsync();
-    return recipes;
+    var response = new GetRecipesForTable.Response
+    {
+        Recipes = recipes
+    };
+    return response;
 });
+
 // Get Recipe
 app.MapGet("/recipe/{id}", async (int id, RecipeDb db) =>
 {
@@ -57,8 +62,8 @@ app.MapPut("/recipe/{id}", async (int id, RecipeDb db, Recipe updatedRecipe) =>
         return Results.NotFound();
     }
     existingRecipe.Title = updatedRecipe.Title;
-    existingRecipe.Createddate = updatedRecipe.Createddate;
-    existingRecipe.Createby = updatedRecipe.Createby;
+    existingRecipe.CreatedDate = updatedRecipe.CreatedDate;
+    existingRecipe.Createdby = updatedRecipe.Createdby;
     await db.SaveChangesAsync();
     return Results.NoContent();
 });

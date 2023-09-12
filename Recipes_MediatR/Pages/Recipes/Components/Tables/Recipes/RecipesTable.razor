@@ -4,20 +4,20 @@
 @inject ISnackbar Snackbar;
 @inject NavigationManager NavigationManager;
 
-<MudTable Loading="@_loading" Items="@Recipes" Bordered="true" Striped="true" Filter="new Func<RecipesTableViewModel,bool>(FilterFunc1)" 
-        @bind-SelectedItem="selectedItem1">
+<MudTable Loading="@_loading" Items="@Response.Recipes" Bordered="true" Striped="true" Filter="new Func<RecipesTableViewModel,bool>(FilterFunc1)"
+@bind-SelectedItem="selectedItem1">
     <ToolBarContent>
         <MudText Typo="Typo.h6">My Recipes</MudText>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" 
-            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <ColGroup>
-        <col/>
-        <col/>
-        <col/>
-        <col style="width:5%;"/>
-        <col style="width:5%;"/>
+        <col />
+        <col />
+        <col />
+        <col style="width:5%;" />
+        <col style="width:5%;" />
     </ColGroup>
     <HeaderContent>
         <MudTh>Name</MudTh>
@@ -28,8 +28,8 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Title</MudTd>
-        <MudTd DataLabel="Created By">@context.Createby</MudTd>
-        <MudTd DataLabel="Created Date">@context.Createddate</MudTd>
+        <MudTd DataLabel="Created By">@context.CreatedBy</MudTd>
+        <MudTd DataLabel="Created Date">@context.CreatedDate</MudTd>
         <MudTd DataLabel="View">
             <MudButton OnClick="@(()=> ViewRecipe(context.Id))" Variant="Variant.Filled" Color="Color.Primary">View</MudButton>
         </MudTd>
@@ -42,16 +42,17 @@
     </PagerContent>
 </MudTable>
 
+
 @code {
     private string searchString1 = "";
-    private RecipesTableViewModel selectedItem1 = null;
-    private IEnumerable<RecipesTableViewModel> Recipes = new List<RecipesTableViewModel>();
+    private RecipesTableViewModel? selectedItem1 = null;
+    private GetRecipeCoreTableData.Response Response = new();
     private bool _loading = true;
 
     protected override async Task OnInitializedAsync()
     {
         _loading = true;
-        Recipes = await MediatR.Send(new GetRecipes(pageSize: 10));
+        Response = await MediatR.Send(new GetRecipeCoreTableData.Request(10));
         _loading = false;
     }
 
@@ -63,22 +64,22 @@
             return true;
         if (!string.IsNullOrEmpty(recipe.Title) && recipe.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (!string.IsNullOrEmpty(recipe.Createby) && recipe.Createby.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (!string.IsNullOrEmpty(recipe.CreatedBy) && recipe.CreatedBy.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (recipe.Createddate.ToString()!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (recipe.CreatedDate.ToString()!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         return false;
     }
 
     private void ViewRecipe(int id)
     {
-        var recipe = Recipes.FirstOrDefault(x => x.Id == id);
+        var recipe = Response?.Recipes.FirstOrDefault(x => x.Id == id);
         NavigationManager.NavigateTo("/viewrecipe/" + id);
     }
 
     private void EditRecipe(int id)
     {
-        var recipe = Recipes.FirstOrDefault(x => x.Id == id);
+        var recipe = Response?.Recipes.FirstOrDefault(x => x.Id == id);
         NavigationManager.NavigateTo("/editrecipe/" + id);
     }
 }

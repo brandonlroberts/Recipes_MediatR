@@ -3,8 +3,8 @@
     {
       "Id": 1,
       "Title": "Spaghetti Bolognese",
-      "Createddate": "2023-09-06T10:30:00",
-      "Createby": "Chef John",
+      "CreatedDate": "2023-09-06T10:30:00",
+      "CreatedBy": "Chef John",
       "IngredientMeasurements": [
         {
           "Ingredient": {
@@ -41,8 +41,8 @@
     {
       "Id": 2,
       "Title": "Chicken Stir-Fry",
-      "Createddate": "2023-09-05T15:45:00",
-      "Createby": "Chef Lisa",
+      "CreatedDate": "2023-09-05T15:45:00",
+      "CreatedBy": "Chef Lisa",
       "IngredientMeasurements": [
         {
           "Ingredient": {

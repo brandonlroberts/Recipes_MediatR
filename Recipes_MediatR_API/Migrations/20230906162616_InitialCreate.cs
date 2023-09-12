@@ -18,8 +18,8 @@ namespace Recipes_MediatR_API.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
-                    Createddate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Createby = table.Column<string>(type: "TEXT", nullable: true)
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

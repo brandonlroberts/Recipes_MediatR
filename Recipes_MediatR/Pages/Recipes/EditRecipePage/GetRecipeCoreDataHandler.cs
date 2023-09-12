@@ -1,10 +1,23 @@
 ﻿using MediatR;
+using Recipes_MediatR.Config;
 using System.Net.Http.Json;
-using static Recipes_MediatR.Pages.Recipes.EditRecipePage.GetRecipeCoreDataHandler;
 
 namespace Recipes_MediatR.Pages.Recipes.EditRecipePage
 {
-    public class GetRecipeCoreDataHandler : IRequestHandler<GetRecipeCoreData, EditRecipeViewModel>
+    public record GetRecipeCoreData
+    {
+        public record Request(int id) : BlazorMediatRRequest, IRequest<Response>;
+
+        public record Response : AuditableResponse
+        {
+            public int Id { get; set; }
+            public string Title { get; set; } = string.Empty;
+            public DateTime? CreatedDate { get; set; }
+            public string CreatedBy { get; set; } = string.Empty;
+        }
+    }
+
+    public class GetRecipeCoreDataHandler : IRequestHandler<GetRecipeCoreData.Request, GetRecipeCoreData.Response>
     {
         private readonly HttpClient _httpClient;
 
@@ -13,20 +26,20 @@ namespace Recipes_MediatR.Pages.Recipes.EditRecipePage
             _httpClient = httpClient;
         }
 
-        public class GetRecipeCoreData : IRequest<EditRecipeViewModel>
+        public async Task<GetRecipeCoreData.Response?> Handle(GetRecipeCoreData.Request request, CancellationToken cancellationToken)
         {
-            public int Id { get; set; }
-
-            public GetRecipeCoreData(int id)
+            try
             {
-                Id = id;
+                return await _httpClient.GetFromJsonAsync<GetRecipeCoreData.Response>($"https://localhost:7164/recipe/{request.id}");
             }
-        }
-
-        public async Task<EditRecipeViewModel> Handle(GetRecipeCoreData request, CancellationToken cancellationToken)
-        {
-            var response = await _httpClient.GetFromJsonAsync<EditRecipeViewModel>($"https://localhost:7164/recipe/{request.Id}");
-            return response!;
+            catch (HttpRequestException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

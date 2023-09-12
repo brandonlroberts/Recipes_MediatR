@@ -3,28 +3,51 @@
 @using static Recipes_MediatR.Pages.Recipes.EditRecipePage.EditRecipeCoreDataHandler;
 @inject IMediator MediatR;
 @inject NavigationManager NavigationManager;
+@inject ISnackbar Snackbar
 
 <EditForm Model="Recipe" OnSubmit="UpdateRecipeCoreData">
     <div style="display:flex; flex-direction:column; width:300px; margin:50px 30px 100px 50px;">
         <MudTextField Class="mb-5" Label="Title" @bind-Value="Recipe.Title" />
-        <MudTextField Class="mb-5" Label="Created By" @bind-Value="Recipe.Createby" />
-        <MudTextField Class="mb-5" Label="Created Date" @bind-Value="Recipe.Createddate" />
-        <MudButton Style="width:75px;" ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Info" Size="Size.Small">Save</MudButton>
+        <MudTextField Class="mb-5" Label="Created By" @bind-Value="Recipe.CreatedBy" />
+        <MudDatePicker Class="mb-5" Label="Created Date" @bind-Date="Recipe.CreatedDate" />
+        <MudButton Style="width:75px; margin-top:20px;" ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Info" Size="Size.Small">Save</MudButton>
     </div>
 </EditForm>
 
 @code {
     [Parameter] public int Id { get; set; }
-    private EditRecipeViewModel Recipe = new EditRecipeViewModel();
+    private GetRecipeCoreData.Response Recipe = new();
 
     protected async override Task OnInitializedAsync()
     {
-        Recipe = await MediatR.Send(new GetRecipeCoreData(Id));
+        try
+        {
+            Recipe = await MediatR.Send(new GetRecipeCoreData.Request(Id));
+        }
+        catch (HttpRequestException ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 
     protected async void UpdateRecipeCoreData()
     {
-        await MediatR.Send(new EditRecipeCoreData(Recipe));
-        NavigationManager.NavigateTo("/");
+        try
+        {
+            await MediatR.Send(new EditRecipeCoreData.Request(Recipe.Id, Recipe.Title, Recipe.CreatedDate, Recipe.CreatedBy));
+            NavigationManager.NavigateTo("/");
+        }
+        catch (HttpRequestException ex)
+        {
+            throw ex;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 }
