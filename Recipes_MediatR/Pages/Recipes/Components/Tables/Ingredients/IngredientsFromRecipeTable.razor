@@ -1,0 +1,105 @@
+﻿@inject IMediator MediatR;
+@inject ISnackbar Snackbar
+
+<MudTable Items="@_ingredients.Ingredients" Dense="true" Hover="true" CanCancelEdit="true" Filter="new Func<IngredientViewModel,bool>(FilterFunc)"
+          @bind-SelectedItem="_selectedItem1" SortLabel="Sort By" CommitEditTooltip="Commit Edit"
+          OnCommitEditClick="@(() => Snackbar.Add("Commit Edit Handler Invoked"))" RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"
+          RowEditCommit="ItemHasBeenCommitted" ApplyButtonPosition="TableApplyButtonPosition.End" 
+          EditTrigger="TableEditTrigger.EditButton" EditButtonPosition="TableEditButtonPosition.End" Style="height:inherit;">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Ingredients</MudText>
+        <MudSpacer />
+        <MudTextField
+            @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+        </MudTextField>
+    </ToolBarContent>
+    <ColGroup>
+        <col style="width:50%;" />
+        <col style="width:50%;" />
+        <col style="width:50px;" />
+    </ColGroup>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<IngredientViewModel, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<IngredientViewModel, object>(x=>x.Measurements)">Measurements</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Title">@context.Name</MudTd>
+        <MudTd DataLabel="Created Date">@context.Measurements</MudTd>
+    </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd DataLabel="Name">
+            <MudTextField @bind-Value="@context.Name" Required />
+        </MudTd>
+        <MudTd DataLabel="Measurements">
+            <MudTextField @bind-Value="@context.Measurements" Required />
+        </MudTd>
+    </RowEditingTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+    <EditButtonContent Context="button">
+        <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" />
+    </EditButtonContent>
+</MudTable>
+
+ @code {
+    [Parameter] public int RecipeId { get; set; }
+    private List<string> _editEvents = new();
+    private string _searchString = "";
+    private IngredientViewModel _selectedItem1 = new();
+    private IngredientViewModel _ingredientBeforeEdit = new();
+    private HashSet<IngredientViewModel> _selectedItems1 = new HashSet<IngredientViewModel>();
+    private TableApplyButtonPosition _applyButtonPosition = TableApplyButtonPosition.End;
+    private TableEditButtonPosition _editButtonPosition = TableEditButtonPosition.End;
+    private TableEditTrigger _editTrigger = TableEditTrigger.RowClick;
+    private GetIngredientsFromRecipeTableData.Response _ingredients = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _ingredients = await MediatR.Send(new GetIngredientsFromRecipeTableData.Request(RecipeId: RecipeId, PageSize: 10));
+    }
+
+    private void ClearEventLog()
+    {
+        _editEvents.Clear();
+    }
+
+    private void AddEditionEvent(string message)
+    {
+        _editEvents.Add(message);
+        StateHasChanged();
+    }
+
+    private void BackupItem(object ingredient)
+    {
+        _ingredientBeforeEdit = new()
+            {
+                Name = ((IngredientViewModel)ingredient).Name,
+                Measurements = ((IngredientViewModel)ingredient).Measurements
+            };
+        AddEditionEvent($"RowEditPreview event: made a backup of Ingredient {((IngredientViewModel)ingredient).Name}");
+    }
+
+    private void ItemHasBeenCommitted(object ingredient)
+    {
+        AddEditionEvent($"RowEditCommit event: Changes to Ingredient {((IngredientViewModel)ingredient).Name} committed");
+    }
+
+    private void ResetItemToOriginalValues(object ingredient)
+    {
+        ((IngredientViewModel)ingredient).Name = _ingredientBeforeEdit?.Name;
+        ((IngredientViewModel)ingredient).Measurements = _ingredientBeforeEdit!.Measurements;
+        AddEditionEvent($"RowEditCancel event: Editing of Ingredient {((IngredientViewModel)ingredient).Name} canceled");
+    }
+
+    private bool FilterFunc(IngredientViewModel ingredient)
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+        if (!string.IsNullOrEmpty(ingredient.Name) && ingredient.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (!string.IsNullOrEmpty(ingredient.Measurements) && ingredient.Measurements.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+}

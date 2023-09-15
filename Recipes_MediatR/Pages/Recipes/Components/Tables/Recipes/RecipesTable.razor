@@ -1,15 +1,15 @@
 ﻿@using Recipes_MediatR.Components.Recipes.Tables.Ingredients;
-@using static Recipes_MediatR.Components.Recipes.Tables.Recipes.RecipesTableHandler;
+@using static Recipes_MediatR.Components.Recipes.Tables.Recipes.GetRecipesTableHandler;
 @inject IMediator MediatR;
 @inject ISnackbar Snackbar;
 @inject NavigationManager NavigationManager;
 
-<MudTable Loading="@_loading" Items="@Response.Recipes" Bordered="true" Striped="true" Filter="new Func<RecipesTableViewModel,bool>(FilterFunc1)"
-@bind-SelectedItem="selectedItem1">
+<MudTable @ref="@_table" Loading="@_loading" Items="@_response.Recipes" Bordered="true" Striped="true" Filter="new Func<RecipesTableViewModel,bool>(FilterFunc1)"
+@bind-SelectedItem="_selectedItem1">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">My Recipes</MudText>
+        <AddRecipeButton AddRecipeTableCallback="@RefreshRecipeTable"/>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start"
+        <MudTextField @bind-Value="_searchString1" Placeholder="Search" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <ColGroup>
@@ -44,19 +44,26 @@
 
 
 @code {
-    private string searchString1 = "";
-    private RecipesTableViewModel? selectedItem1 = null;
-    private GetRecipeCoreTableData.Response Response = new();
+    private string _searchString1 = "";
+    private MudTable<RecipesTableViewModel> _table = new();
+    private RecipesTableViewModel? _selectedItem1 = null;
+    private GetRecipeCoreTableData.Response _response = new();
     private bool _loading = true;
 
     protected override async Task OnInitializedAsync()
     {
-        _loading = true;
-        Response = await MediatR.Send(new GetRecipeCoreTableData.Request(10));
-        _loading = false;
+        await LoadRecipeTable();
     }
 
-    private bool FilterFunc1(RecipesTableViewModel recipe) => FilterFunc(recipe, searchString1);
+    private async Task LoadRecipeTable()
+    {
+        _loading = true;
+        _response = await MediatR.Send(new GetRecipeCoreTableData.Request(5));
+        _loading = false;
+
+    }
+
+    private bool FilterFunc1(RecipesTableViewModel recipe) => FilterFunc(recipe, _searchString1);
 
     private bool FilterFunc(RecipesTableViewModel recipe, string searchString)
     {
@@ -73,13 +80,19 @@
 
     private void ViewRecipe(int id)
     {
-        var recipe = Response?.Recipes.FirstOrDefault(x => x.Id == id);
+        var recipe = _response?.Recipes.FirstOrDefault(x => x.Id == id);
         NavigationManager.NavigateTo("/viewrecipe/" + id);
     }
 
     private void EditRecipe(int id)
     {
-        var recipe = Response?.Recipes.FirstOrDefault(x => x.Id == id);
+        var recipe = _response?.Recipes.FirstOrDefault(x => x.Id == id);
         NavigationManager.NavigateTo("/editrecipe/" + id);
+    }
+
+    private async Task RefreshRecipeTable()
+    {
+        await LoadRecipeTable();
+        StateHasChanged();
     }
 }

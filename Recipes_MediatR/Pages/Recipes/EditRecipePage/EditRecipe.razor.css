@@ -1,0 +1,20 @@
+﻿.recipe {
+    grid-area: recipe;
+}
+
+.ingred {
+    grid-area: ingred;
+}
+
+.instru {
+    grid-area: instru;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-areas:
+        'recipe ingred ingred'
+        'instru instru instru';
+    gap: 40px;
+    padding: 10px;
+}

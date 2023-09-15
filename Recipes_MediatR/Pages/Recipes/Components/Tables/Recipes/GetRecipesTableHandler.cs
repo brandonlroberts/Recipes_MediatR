@@ -10,15 +10,15 @@ namespace Recipes_MediatR.Components.Recipes.Tables.Recipes
 
         public record Response : AuditableResponse
         {
-            public List<RecipesTableViewModel> Recipes { get; set; }
+            public List<RecipesTableViewModel> Recipes { get; set; } = new();
         }
     }
 
-    public class RecipesTableHandler : IRequestHandler<GetRecipeCoreTableData.Request, GetRecipeCoreTableData.Response>
+    public class GetRecipesTableHandler : IRequestHandler<GetRecipeCoreTableData.Request, GetRecipeCoreTableData.Response>
     {
         private readonly HttpClient _httpClient;
 
-        public RecipesTableHandler(HttpClient httpClient)
+        public GetRecipesTableHandler(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

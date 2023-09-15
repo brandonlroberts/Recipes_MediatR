@@ -1,19 +1,28 @@
 ﻿@page "/editrecipe/{Id:int}"
 @using static Recipes_MediatR.Pages.Recipes.EditRecipePage.GetRecipeCoreDataHandler;
-@using static Recipes_MediatR.Pages.Recipes.EditRecipePage.EditRecipeCoreDataHandler;
 @inject IMediator MediatR;
 @inject NavigationManager NavigationManager;
 @inject ISnackbar Snackbar
 
-<MudForm @ref="@_mudform" Model="@_recipe" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
-    <div style="display:flex; flex-direction:column; width:300px; margin:50px 30px 100px 50px;">
-        <MudTextField Class="mb-5" Label="Title" Immediate="true" For="() => _recipe.Title" @bind-Value="_recipe.Title" />
-        <MudTextField Class="mb-5" Label="Created By" Immediate="true" For="() => _recipe.CreatedBy" @bind-Value="_recipe.CreatedBy" />
-        <MudDatePicker Class="mb-5" Label="Created Date" For="() => _recipe.CreatedDate" @bind-Date="_recipe.CreatedDate" />
-        <MudButton Style="width:75px; margin-top:20px;" OnClick="@UpdateRecipeCoreData" Variant="Variant.Filled" 
-            StartIcon="@Icons.Material.Filled.Save" Color="Color.Info" Size="Size.Small">Save</MudButton>
+<div class="grid-container">
+    <div class="recipe" style="padding:1rem; background:white; border-radius:5px; height:300px;">
+        <MudForm @ref="@_mudform" Model="@_recipe" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
+            <div style="display:flex; flex-direction:column;">
+                <MudTextField Class="mb-5" Label="Title" Immediate="true" For="() => _recipe.Title" @bind-Value="_recipe.Title" />
+                <MudTextField Class="mb-5" Label="Created By" Immediate="true" For="() => _recipe.CreatedBy" @bind-Value="_recipe.CreatedBy" />
+                <MudDatePicker Class="mb-5" Label="Created Date" For="() => _recipe.CreatedDate" @bind-Date="_recipe.CreatedDate" />
+                <MudButton Style="width:75px; margin-top:20px;" OnClick="@UpdateRecipeCoreData" Variant="Variant.Filled"
+                           StartIcon="@Icons.Material.Filled.Save" Color="Color.Info" Size="Size.Small">Save</MudButton>
+            </div>
+        </MudForm>
     </div>
-</MudForm>
+    <div class="ingred" style="height:300px;">
+        <IngredientsFromRecipeTable RecipeId="Id" />
+    </div>
+    <div class="instru">
+        <InstructionsFromRecipeTable RecipeId="Id" />
+    </div>
+</div>
 
 @code {
     [Parameter] public int Id { get; set; }

@@ -1,0 +1,105 @@
+﻿@using Recipes_MediatR.Pages.Recipes.Components.Tables.Insructions;
+@inject IMediator MediatR;
+@inject ISnackbar Snackbar
+
+<MudTable Items="@_instuctions.Instructions" Dense="true" Hover="true" CanCancelEdit="true" Filter="new Func<InstructionViewModel,bool>(FilterFunc)"
+@bind-SelectedItem="_selectedItem1" SortLabel="Sort By" CommitEditTooltip="Commit Edit"
+          OnCommitEditClick="@(() => Snackbar.Add("Commit Edit Handler Invoked"))" RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"
+          RowEditCommit="ItemHasBeenCommitted" ApplyButtonPosition="TableApplyButtonPosition.End" EditButtonPosition="TableEditButtonPosition.End"
+          EditTrigger="TableEditTrigger.EditButton">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Instructions</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+        </MudTextField>
+    </ToolBarContent>
+    <ColGroup>
+        <col style="width:50%;" />
+        <col style="width:50%;" />
+        <col style="width:50px;" />
+    </ColGroup>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<InstructionViewModel, object>(x=>x.Summary)">Summary</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<InstructionViewModel, object>(x=>x.Sequence)">Sequence</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Summary">@context.Summary</MudTd>
+        <MudTd DataLabel="Sequence">@context.Sequence</MudTd>
+    </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd DataLabel="Summary">
+            <MudTextField @bind-Value="@context.Summary" Lines="3" Required />
+         </MudTd>
+         <MudTd DataLabel="Sequence">
+             <MudNumericField @bind-Value="@context.Sequence" Required />
+         </MudTd>
+     </RowEditingTemplate>
+     <PagerContent>
+         <MudTablePager />
+     </PagerContent>
+     <EditButtonContent Context="button">
+         <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" />
+     </EditButtonContent>
+ </MudTable>
+
+ @code {
+    [Parameter] public int RecipeId { get; set; }
+    private List<string> _editEvents = new();
+    private string _searchString = "";
+    private InstructionViewModel _selectedItem1 = new();
+    private InstructionViewModel _instuctionBeforeEdit = new();
+    private HashSet<InstructionViewModel> _selectedItems1 = new HashSet<InstructionViewModel>();
+    private TableApplyButtonPosition _applyButtonPosition = TableApplyButtonPosition.End;
+    private TableEditButtonPosition _editButtonPosition = TableEditButtonPosition.End;
+    private TableEditTrigger _editTrigger = TableEditTrigger.RowClick;
+    private GetInstructionsFromRecipeTableData.Response _instuctions = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _instuctions = await MediatR.Send(new GetInstructionsFromRecipeTableData.Request(RecipeId: RecipeId, PageSize: 10));
+    }
+
+    private void ClearEventLog()
+    {
+        _editEvents.Clear();
+    }
+
+    private void AddEditionEvent(string message)
+    {
+        _editEvents.Add(message);
+        StateHasChanged();
+    }
+
+    private void BackupItem(object instuction)
+    {
+        _instuctionBeforeEdit = new()
+            {
+                Summary = ((InstructionViewModel)instuction).Summary,
+                Sequence = ((InstructionViewModel)instuction).Sequence
+            };
+        AddEditionEvent($"RowEditPreview event: made a backup of Instruction {((InstructionViewModel)instuction).Summary}");
+    }
+
+    private void ItemHasBeenCommitted(object instuction)
+    {
+        AddEditionEvent($"RowEditCommit event: Changes to Instruction {((InstructionViewModel)instuction).Summary} committed");
+    }
+
+    private void ResetItemToOriginalValues(object instuction)
+    {
+        ((InstructionViewModel)instuction).Summary = _instuctionBeforeEdit?.Summary;
+        ((InstructionViewModel)instuction).Sequence = _instuctionBeforeEdit!.Sequence;
+        AddEditionEvent($"RowEditCancel event: Editing of Instruction {((InstructionViewModel)instuction).Summary} canceled");
+    }
+
+    private bool FilterFunc(InstructionViewModel instuction)
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+        if (!string.IsNullOrEmpty(instuction.Summary) && instuction.Summary.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (!string.IsNullOrEmpty(instuction.Sequence.ToString()) && instuction.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+}

@@ -14,9 +14,9 @@ builder.Services.AddMudServices();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(IngredientTableHandler).Assembly));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetRecipesTableHandler).Assembly));
 
-builder.Services.AddValidatorsFromAssembly(typeof(IngredientTableHandler).Assembly);
+builder.Services.AddValidatorsFromAssembly(typeof(GetRecipesTableHandler).Assembly);
 
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 

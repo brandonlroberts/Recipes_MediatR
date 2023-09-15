@@ -1,26 +1,28 @@
 ﻿@inject IDialogService DialogService
 
-<MudButton Disabled="@_processing" OnClick="ProcessSomething" Variant="Variant.Filled" Color="Color.Primary">
-    @if (_processing)
-    {
-        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-        <MudText Class="ms-2">Processing</MudText>
-    }
-    else
-    {
-        <MudText>Add Recipe</MudText>
-    }
-</MudButton>
+<MudIconButton OnClick="@LaunchAddRecipeDialog" Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" />
 
 @code {
+    [Parameter] public EventCallback AddRecipeTableCallback { get; set; }
     private bool _processing = false;
 
-    async Task ProcessSomething()
+    private void LaunchAddRecipeDialog()
     {
-        _processing = true;
-        await Task.Delay(500);
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddRecipeDialog>("Add new recipe", options);
+        var options = new DialogOptions 
+        { 
+            CloseOnEscapeKey = true 
+        };
+        var parameters = new DialogParameters
+            {
+                ["RecipeButtonCallback"] = EventCallback.Factory.Create(this, AddRecipeTableCallback)
+            };
+
+        DialogService.Show<AddRecipeDialog>("Add new recipe", parameters, options);
         _processing = false;
+    }
+
+    private async Task AddRecipeButtonCallback()
+    {
+        await AddRecipeTableCallback.InvokeAsync();
     }
 }

@@ -1,9 +1,5 @@
-﻿<MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
-    <MudNavLink Href="/servers" Match="NavLinkMatch.Prefix">Servers</MudNavLink>
-    <MudNavGroup Title="Settings" Expanded="true">
-        <MudNavLink Href="/users" Match="NavLinkMatch.Prefix">Users</MudNavLink>
-        <MudNavLink Href="/security" Match="NavLinkMatch.Prefix">Security</MudNavLink>
-    </MudNavGroup>
-    <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
-</MudNavMenu>
+﻿<MudAppBar Color="Color.Primary" Fixed="false">
+    <MudIconButton Icon="@Icons.Material.Filled.EmojiFoodBeverage" Href="/" Color="Color.Inherit" Edge="Edge.Start" />
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Href="https://github.com/brandonlroberts?tab=repositories" Color="Color.Inherit" />
+</MudAppBar>

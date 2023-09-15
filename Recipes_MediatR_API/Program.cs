@@ -42,7 +42,10 @@ app.MapGet("/recipes", async (RecipeDb db) =>
 // Get Recipe
 app.MapGet("/recipe/{id}", async (int id, RecipeDb db) =>
 {
-    var recipe = await db.Recipes.Include(x => x.Ingredients).Include(x => x.Instructions).FirstAsync(x => x.Id == id);
+    var recipe = await db.Recipes
+        .Include(x => x.Ingredients)
+        .Include(x => x.Instructions)
+        .FirstAsync(x => x.Id == id);
     return recipe == null ? Results.NotFound() : Results.Ok(recipe);
 });
 // Create 

@@ -1,15 +1,51 @@
-﻿<MudDialog>
+﻿@inject IMediator MediatR;
+@inject ISnackbar Snackbar
+
+<MudDialog>
     <DialogContent>
-        Dialog Content
+        <div class="recipe" style="padding:1rem; background:white; border-radius:5px; height:300px;">
+            <MudForm @ref="@_mudform" Model="@_viewModel" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
+                <div style="display:flex; flex-direction:column;">
+                    <MudTextField Class="mb-5" Label="Title" Immediate="true" For="() => _viewModel.Title" @bind-Value="_viewModel.Title" />
+                    <MudTextField Class="mb-5" Label="Created By" Immediate="true" For="() => _viewModel.CreatedBy" @bind-Value="_viewModel.CreatedBy" />
+                    <MudDatePicker Class="mb-5" Label="Created Date" For="() => _viewModel.CreatedDate" @bind-Date="_viewModel.CreatedDate" />
+                </div>
+            </MudForm>
+        </div>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
     </DialogActions>
 </MudDialog>
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new();
+    [Parameter] public EventCallback RecipeButtonCallback { get; set; }
+    MudForm _mudform = new MudForm();
+    AddRecipeViewModel _viewModel = new();
+    AddRecipeViewModelValidator _validator = new();
 
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
-    void Cancel() => MudDialog.Cancel();
+    private async Task Submit()
+    {
+        try
+        {
+            await _mudform.Validate();
+            if (_mudform.IsValid)
+            {
+                await MediatR.Send(new AddRecipeCoreData.Request(_viewModel));
+                await RecipeButtonCallback.InvokeAsync();
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
 }
