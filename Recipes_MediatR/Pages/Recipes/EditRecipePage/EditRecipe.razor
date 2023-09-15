@@ -5,24 +5,27 @@
 @inject NavigationManager NavigationManager;
 @inject ISnackbar Snackbar
 
-<EditForm Model="Recipe" OnSubmit="UpdateRecipeCoreData">
+<MudForm @ref="@_mudform" Model="@_recipe" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
     <div style="display:flex; flex-direction:column; width:300px; margin:50px 30px 100px 50px;">
-        <MudTextField Class="mb-5" Label="Title" @bind-Value="Recipe.Title" />
-        <MudTextField Class="mb-5" Label="Created By" @bind-Value="Recipe.CreatedBy" />
-        <MudDatePicker Class="mb-5" Label="Created Date" @bind-Date="Recipe.CreatedDate" />
-        <MudButton Style="width:75px; margin-top:20px;" ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Info" Size="Size.Small">Save</MudButton>
+        <MudTextField Class="mb-5" Label="Title" Immediate="true" For="() => _recipe.Title" @bind-Value="_recipe.Title" />
+        <MudTextField Class="mb-5" Label="Created By" Immediate="true" For="() => _recipe.CreatedBy" @bind-Value="_recipe.CreatedBy" />
+        <MudDatePicker Class="mb-5" Label="Created Date" For="() => _recipe.CreatedDate" @bind-Date="_recipe.CreatedDate" />
+        <MudButton Style="width:75px; margin-top:20px;" OnClick="@UpdateRecipeCoreData" Variant="Variant.Filled" 
+            StartIcon="@Icons.Material.Filled.Save" Color="Color.Info" Size="Size.Small">Save</MudButton>
     </div>
-</EditForm>
+</MudForm>
 
 @code {
     [Parameter] public int Id { get; set; }
-    private GetRecipeCoreData.Response Recipe = new();
+    MudForm _mudform = new();
+    GetRecipeCoreData.Response _recipe = new();
+    EditRecipeCoreDataValidator _validator = new();
 
     protected async override Task OnInitializedAsync()
     {
         try
         {
-            Recipe = await MediatR.Send(new GetRecipeCoreData.Request(Id));
+            _recipe = await MediatR.Send(new GetRecipeCoreData.Request(Id));
         }
         catch (HttpRequestException ex)
         {
@@ -38,8 +41,12 @@
     {
         try
         {
-            await MediatR.Send(new EditRecipeCoreData.Request(Recipe.Id, Recipe.Title, Recipe.CreatedDate, Recipe.CreatedBy));
-            NavigationManager.NavigateTo("/");
+            await _mudform.Validate();
+            if (_mudform.IsValid)
+            {
+                await MediatR.Send(new EditRecipeCoreData.Request(_recipe.Id, _recipe.Title, _recipe.CreatedDate, _recipe.CreatedBy));
+                NavigationManager.NavigateTo("/");
+            }
         }
         catch (HttpRequestException ex)
         {
