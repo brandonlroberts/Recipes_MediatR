@@ -21,7 +21,7 @@
     <ItemRenderer>
         <MudListItem>
             <div style="display:flex;">
-                <span> (@context.Sequence.) @context.Summary</span>
+                <span> <b>Step @context.Sequence: </b>@context.Summary</span>
                 <MudSpacer />
                 <MudIconButton OnClick="@(() => OnEdit(context.Id))" Icon="@Icons.Material.Filled.Edit" aria-label="edit"></MudIconButton>
                 <MudIconButton OnClick="@(() => OnDeleted(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
