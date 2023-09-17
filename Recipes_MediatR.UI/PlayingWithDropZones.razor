@@ -1,0 +1,80 @@
+﻿@inject ISnackbar Snackbar
+
+<MudDropContainer @ref="MudDropContainerRef"
+                  ItemDropped="ItemUpdated"
+                  T="InstructionViewModel"
+                  Items="@_items.OrderBy(x => x.Sequence)"
+                  ItemsSelector="@((item,dropzone) => true)"
+                  Class="d-flex flex-wrap flex-grow-1">
+    <ChildContent>
+        <MudPaper Class="ma-4 pa-4 flex-grow-1">
+            <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
+                <div style="display:flex; padding:1rem;">
+                    <MudIconButton Style="height:30px;" OnClick="@OnAdd" Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" />
+                    <MudListSubheader>Instructions</MudListSubheader>
+                    <MudSpacer />
+                </div>
+                <MudDropZone T="InstructionViewModel" Identifier="1" Class="flex-grow-1" AllowReorder="true" />
+            </MudList>
+        </MudPaper>
+    </ChildContent>
+    <ItemRenderer>
+        <MudListItem>
+            <div style="display:flex;">
+                <span> (@context.Sequence.) @context.Summary</span>
+                <MudSpacer />
+                <MudIconButton OnClick="@(() => OnEdit(context.Id))" Icon="@Icons.Material.Filled.Edit" aria-label="edit"></MudIconButton>
+                <MudIconButton OnClick="@(() => OnDeleted(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+            </div>
+        </MudListItem>
+    </ItemRenderer>
+</MudDropContainer>
+
+@code {
+    MudDropContainer<InstructionViewModel> MudDropContainerRef { get; set; } = new();
+
+    private void ItemUpdated(MudItemDropInfo<InstructionViewModel> dropItem)
+    {
+        int oldIndex = _items.IndexOf(dropItem.Item!);
+        _items.RemoveAt(oldIndex);
+        _items.Insert(dropItem.IndexInZone, dropItem.Item!);
+        for (int i = 0; i < _items.Count; i++)
+        {
+            _items[i].Sequence = i + 1;
+        }
+        MudDropContainerRef.Refresh();
+    }
+
+    private void OnEdit(int id)
+    {
+        //Snackbar.Add("name to be edited...");
+    }
+
+    private void OnAdd()
+    {
+        Snackbar.Add("record added...");
+    }
+
+    private void OnDeleted(int id)
+    {
+        _items.RemoveAll(x => x.Id == id);
+        MudDropContainerRef.Refresh();
+    }
+
+    private List<InstructionViewModel> _items = new()
+    {
+        new InstructionViewModel(){ Id = 1, RecipeId = 1, Summary = "Summary 1", Sequence = 1 },
+        new InstructionViewModel(){ Id = 2, RecipeId = 2, Summary = "Summary 2", Sequence = 2 },
+        new InstructionViewModel(){ Id = 3, RecipeId = 3, Summary = "Summary 3", Sequence = 3 },
+        new InstructionViewModel(){ Id = 4, RecipeId = 4, Summary = "Summary 4", Sequence = 4 },
+        new InstructionViewModel(){ Id = 5, RecipeId = 5, Summary = "Summary 5", Sequence = 5 },
+    };
+
+    public class InstructionViewModel
+    {
+        public int Id { get; set; }
+        public int RecipeId { get; set; }
+        public string Summary { get; set; } = string.Empty;
+        public int Sequence { get; set; }
+    }
+}
